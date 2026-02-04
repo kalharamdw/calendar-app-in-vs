@@ -134,3 +134,31 @@ margin-top: 15px;
 
 
 </div>
+<script>
+const monthSelect = document.getElementById('monthSelect');
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+
+// Sri Lanka public holidays (fixed-date examples)
+const sriLankaHolidays = {
+'1-1': 'New Year',
+'2-4': 'Independence Day',
+'5-1': 'May Day',
+'12-25': 'Christmas'
+};
+
+
+months.forEach((m, i) => {
+const opt = document.createElement('option');
+opt.value = i;
+opt.textContent = m;
+monthSelect.appendChild(opt);
+});
+
+
+monthSelect.value = new Date().getMonth();
+
+
+function generateCalendar() {
+const grid = document.getElementById('calendarGrid');
+grid.innerHTML = '';
