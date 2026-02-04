@@ -3,65 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced Calendar Designer</title>
+  <title>Yearly Calendar Designer</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     :root {
-      --primary: #2563eb;
-      --accent: #22c55e;
+      --primary: #6366f1;
       --holiday: #ef4444;
-      --bg: #f1f5f9;
+      --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
+      --font: 'Inter', sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0e7ff, #f0fdf4);
+      font-family: var(--font);
+      background: linear-gradient(135deg, #eef2ff, #ecfeff);
       color: var(--text);
     }
 
     .app {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: auto;
-      padding: 32px 20px 60px;
+      padding: 32px 20px 80px;
     }
 
-    h1.app-title {
+    h1 {
       text-align: center;
+      font-size: 36px;
       margin-bottom: 30px;
-      font-size: 32px;
-      font-weight: 700;
     }
 
     /* CONTROLS */
     .controls {
       background: var(--card);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 24px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 18px;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.1);
       margin-bottom: 36px;
     }
 
     .controls label {
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 6px;
       display: block;
+      margin-bottom: 6px;
     }
 
     .controls input,
@@ -79,117 +76,98 @@
       background: var(--primary);
       color: #fff;
       border: none;
-      cursor: pointer;
       font-weight: 600;
-      transition: transform .15s ease, box-shadow .15s ease;
+      cursor: pointer;
     }
 
-    .controls button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    /* HEADER IMAGE */
+    .header-image-wrapper {
+      position: relative;
+      margin-bottom: 30px;
     }
 
-    /* CALENDAR CARD */
-    .calendar-card {
-      background: var(--card);
-      border-radius: 28px;
-      padding: 28px;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.12);
-    }
-
-    .calendar-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .calendar-header img {
+    .header-image-wrapper img {
       width: 100%;
-      max-height: 180px;
+      max-height: 220px;
       object-fit: cover;
+      border-radius: 24px;
+    }
+
+    .image-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* YEAR GRID */
+    .year-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .month-card {
+      background: var(--card);
       border-radius: 20px;
-      margin-bottom: 16px;
-      background: #e5e7eb;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     }
 
-    .calendar-header h2 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 700;
+    .month-card h3 {
+      text-align: center;
+      margin: 10px 0 14px;
+      color: var(--primary);
     }
 
-    /* GRID */
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
+      gap: 6px;
+      font-size: 12px;
     }
 
     .day-name {
       text-align: center;
       font-weight: 600;
-      padding: 10px 0;
-      border-radius: 10px;
+      padding: 6px 0;
       background: #eef2ff;
+      border-radius: 8px;
     }
 
     .date {
-      min-height: 90px;
-      padding: 10px;
-      border-radius: 14px;
+      min-height: 36px;
+      border-radius: 8px;
       background: #f8fafc;
-      position: relative;
-      cursor: pointer;
-      transition: transform .1s ease, box-shadow .1s ease;
-    }
-
-    .date:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
     }
 
     .date.holiday {
-      background: rgba(239,68,68,0.15);
-      border: 2px solid var(--holiday);
+      background: rgba(239,68,68,0.2);
       color: #7f1d1d;
-    }
-
-    .date span {
-      position: absolute;
-      top: 8px;
-      right: 10px;
       font-weight: 700;
-      font-size: 14px;
     }
 
-    .footer {
+    footer {
       text-align: center;
-      margin-top: 18px;
+      margin-top: 30px;
       font-size: 13px;
-      opacity: .7;
-    }
-
-    @media (max-width: 600px) {
-      .calendar-header img {
-        max-height: 140px;
-      }
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
 
 <div class="app">
-  <h1 class="app-title">Custom Calendar Designer</h1>
+  <h1>Yearly Calendar Designer</h1>
 
   <!-- CONTROLS -->
   <div class="controls">
     <div>
       <label>Company / Calendar Title</label>
       <input type="text" id="titleInput" placeholder="Your Company Name" />
-    </div>
-
-    <div>
-      <label>Month</label>
-      <select id="monthSelect"></select>
     </div>
 
     <div>
@@ -203,17 +181,21 @@
     </div>
 
     <div>
-      <label>Theme Color</label>
-      <input type="color" id="themeColor" value="#2563eb" />
+      <label>Primary Theme Color</label>
+      <input type="color" id="themeColor" value="#6366f1" />
     </div>
 
     <div>
-      <label>Holiday Color</label>
-      <input type="color" id="holidayColor" value="#ef4444" />
+      <label>Font Style</label>
+      <select id="fontSelect">
+        <option value="Inter">Inter (Modern)</option>
+        <option value="Poppins">Poppins (Friendly)</option>
+        <option value="Montserrat">Montserrat (Corporate)</option>
+      </select>
     </div>
 
     <div>
-      <button id="generateBtn">Generate Calendar</button>
+      <button id="generateBtn">Generate Year Calendar</button>
     </div>
 
     <div>
@@ -221,113 +203,107 @@
     </div>
   </div>
 
-  <!-- CALENDAR -->
-  <div class="calendar-card" id="calendar">
-    <div class="calendar-header">
-      <img id="headerImage" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Header" />
-      <h2 id="calendarTitle">Sample Company Calendar</h2>
-    </div>
-
-    <div class="calendar-grid" id="calendarGrid"></div>
-    <div class="footer">Click any date to mark it as a holiday</div>
+  <!-- HEADER IMAGE -->
+  <div class="header-image-wrapper">
+    <img id="headerImage" src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d" alt="Header Image" />
   </div>
+
+  <h2 id="calendarTitle" style="text-align:center;margin-bottom:30px;">Sample Company – Yearly Calendar</h2>
+
+  <!-- YEAR CALENDAR -->
+  <div class="year-grid" id="yearGrid"></div>
+
+  <footer>Public holidays are pre-marked and identical for all users</footer>
 </div>
 
 <script>
-  const months = [
-    'January','February','March','April','May','June',
-    'July','August','September','October','November','December'
-  ];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-  const sriLankaHolidays = {
-    '1-1': 'New Year',
-    '2-4': 'Independence Day',
-    '5-1': 'May Day',
-    '12-25': 'Christmas'
+  // Fixed public holidays (same for everyone)
+  const fixedHolidays = {
+    '1-1': true,   // New Year
+    '2-4': true,   // Independence Day
+    '5-1': true,   // May Day
+    '12-25': true  // Christmas
   };
 
-  const monthSelect = document.getElementById('monthSelect');
-  months.forEach((m, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = m;
-    monthSelect.appendChild(opt);
-  });
-
-  monthSelect.value = new Date().getMonth();
-
-  function generateCalendar() {
-    const grid = document.getElementById('calendarGrid');
-    grid.innerHTML = '';
-
-    const month = parseInt(monthSelect.value);
+  function generateYearCalendar() {
     const year = parseInt(document.getElementById('yearInput').value);
+    const yearGrid = document.getElementById('yearGrid');
+    yearGrid.innerHTML = '';
 
     document.getElementById('calendarTitle').textContent =
-      document.getElementById('titleInput').value || 'Custom Calendar';
+      (document.getElementById('titleInput').value || 'Company Calendar') + ' – ' + year;
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    months.forEach((monthName, monthIndex) => {
+      const monthCard = document.createElement('div');
+      monthCard.className = 'month-card';
 
-    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
-      const el = document.createElement('div');
-      el.className = 'day-name';
-      el.textContent = d;
-      grid.appendChild(el);
-    });
+      const title = document.createElement('h3');
+      title.textContent = monthName;
+      monthCard.appendChild(title);
 
-    for (let i = 0; i < firstDay; i++) {
-      grid.appendChild(document.createElement('div'));
-    }
+      const grid = document.createElement('div');
+      grid.className = 'calendar-grid';
 
-    for (let day = 1; day <= daysInMonth; day++) {
-      const cell = document.createElement('div');
-      cell.className = 'date';
-      cell.innerHTML = `<span>${day}</span>`;
-
-      const key = `${month + 1}-${day}`;
-      if (sriLankaHolidays[key]) {
-        cell.classList.add('holiday');
-        cell.title = sriLankaHolidays[key];
-      }
-
-      cell.addEventListener('click', () => {
-        cell.classList.toggle('holiday');
+      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'day-name';
+        el.textContent = d;
+        grid.appendChild(el);
       });
 
-      grid.appendChild(cell);
-    }
+      const firstDay = new Date(year, monthIndex, 1).getDay();
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
-    document.documentElement.style.setProperty('--primary', document.getElementById('themeColor').value);
-    document.documentElement.style.setProperty('--holiday', document.getElementById('holidayColor').value);
+      for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'date';
+        cell.textContent = day;
+
+        const key = `${monthIndex + 1}-${day}`;
+        if (fixedHolidays[key]) cell.classList.add('holiday');
+
+        grid.appendChild(cell);
+      }
+
+      monthCard.appendChild(grid);
+      yearGrid.appendChild(monthCard);
+    });
   }
 
   document.getElementById('imageInput').addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-    reader.onload = ev => {
-      document.getElementById('headerImage').src = ev.target.result;
-    };
+    reader.onload = ev => document.getElementById('headerImage').src = ev.target.result;
     reader.readAsDataURL(file);
   });
 
-  document.getElementById('generateBtn').addEventListener('click', generateCalendar);
+  document.getElementById('themeColor').addEventListener('input', e => {
+    document.documentElement.style.setProperty('--primary', e.target.value);
+  });
+
+  document.getElementById('fontSelect').addEventListener('change', e => {
+    document.documentElement.style.setProperty('--font', `'${e.target.value}', sans-serif`);
+  });
+
+  document.getElementById('generateBtn').addEventListener('click', generateYearCalendar);
 
   document.getElementById('pdfBtn').addEventListener('click', async () => {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'pt', 'a4');
-
-    await pdf.html(document.getElementById('calendar'), {
+    await pdf.html(document.querySelector('.app'), {
       x: 20,
       y: 20,
       width: 560,
-      callback: () => pdf.save('custom-calendar.pdf')
+      callback: () => pdf.save('yearly-calendar.pdf')
     });
   });
 
-  generateCalendar();
+  generateYearCalendar();
 </script>
 
 </body>
