@@ -213,3 +213,24 @@ reader.onload = ev => document.getElementById('headerImage').src = ev.target.res
 reader.readAsDataURL(file);
 }
 });
+async function downloadPDF() {
+const { jsPDF } = window.jspdf;
+const size = document.getElementById('pdfSize').value;
+const format = size === 'a3' ? 'a3' : 'a4';
+
+
+const pdf = new jsPDF('p', 'pt', format);
+await pdf.html(document.getElementById('calendar'), {
+callback: () => pdf.save(`custom-calendar-${format}.pdf`),
+x: 20,
+y: 20,
+width: format === 'a3' ? 800 : 550
+});
+} = window.jspdf;
+const pdf = new jsPDF('p', 'pt', 'a4');
+await pdf.html(document.getElementById('calendar'), {
+callback: () => pdf.save('custom-calendar.pdf'),
+x: 20,
+y: 20
+});
+}
