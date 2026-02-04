@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Advanced Yearly Calendar Builder</title>
+  <title>Ultimate Sri Lanka Calendar Builder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins&family=Montserrat&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins&family=Montserrat&family=Roboto&family=Open+Sans&family=Lato&display=swap" rel="stylesheet">
 
   <!-- Canvas2Image for JPEG download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -14,9 +14,8 @@
   <style>
     :root {
       --primary: #6366f1;
-      --secondary: #ec4899;
       --bg: #f8fafc;
-      --card: #ffffff;
+      --card: rgba(255,255,255,0.85);
       --holiday: #ef4444;
     }
 
@@ -27,132 +26,206 @@
       color: #1f2937;
     }
 
-    header { padding: 20px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10; }
-    header h1 { margin: 0 0 10px; }
+    header {
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-    select, input, button { padding: 8px 10px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 14px; }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      align-items: center;
+    }
+
+    select, input, button {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+    }
+
     button { background: var(--primary); color: white; cursor: pointer; border: none; }
-    button.secondary { background: var(--secondary); }
+    button.secondary { background: #ec4899; }
 
     #previewWrapper { padding: 30px; }
-    #calendar { background: var(--card); padding: 20px; border-radius: 16px; max-width: 1200px; margin: auto; }
-    .company-name { text-align: center; font-size: 28px; font-weight: bold; margin-bottom: 10px; }
 
-    .layout { display: grid; gap: 20px; }
-    .layout.top-image { grid-template-rows: auto 1fr; }
-    .layout.left-image { grid-template-columns: 1fr 2fr; }
-    .layout.right-image { grid-template-columns: 2fr 1fr; }
-    .layout.bottom-image { grid-template-rows: 1fr auto; }
+    #calendar {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      color: #1f2937;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
 
-    .header-image img { width: 100%; border-radius: 12px; object-fit: cover; }
+    .company-name, .year-display {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
     .months { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-    .month { border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px; }
-    .month h3 { text-align: center; margin: 5px 0 10px; color: var(--primary); }
+    .month { border-radius: 12px; padding: 10px; background: rgba(255,255,255,0.85); transition: all 0.3s ease; }
+    .month h3 { text-align: center; margin: 5px 0 10px; }
+
     .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; font-size: 12px; text-align: center; }
     .day { padding: 6px 0; border-radius: 6px; }
-    .holiday { background: var(--holiday); color: white; }
+    .holiday { background: var(--holiday); color: white; font-weight: 700; }
+
+    /* Theme presets */
+    .theme1 { --primary: #6366f1; }
+    .theme2 { --primary: #10b981; }
+    .theme3 { --primary: #f59e0b; }
+    .theme4 { --primary: #8b5cf6; }
+    .theme5 { --primary: #ec4899; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Yearly Calendar Builder</h1>
+  <h1>Ultimate Sri Lanka Calendar Builder</h1>
   <div class="controls">
     <input type="text" id="companyInput" placeholder="Company / Name" />
+    <input type="number" id="yearInput" value="2026" min="2026" max="2030" />
     <select id="fontSelect">
       <option value="Inter">Inter</option>
       <option value="Poppins">Poppins</option>
       <option value="Montserrat">Montserrat</option>
+      <option value="Roboto">Roboto</option>
+      <option value="Open Sans">Open Sans</option>
+      <option value="Lato">Lato</option>
     </select>
-    <select id="layoutSelect">
-      <option value="top-image">Image Top</option>
-      <option value="left-image">Image Left</option>
-      <option value="right-image">Image Right</option>
-      <option value="bottom-image">Image Bottom</option>
+    <input type="color" id="fontColor" value="#1f2937" title="Calendar Font Color" />
+    <input type="number" id="companyFontSize" value="28" min="10" max="60" />
+    <input type="number" id="yearFontSize" value="20" min="10" max="40" />
+    <input type="color" id="companyColor" value="#1f2937" />
+    <input type="color" id="yearColor" value="#1f2937" />
+    <input type="file" id="backgroundUpload" accept="image/*" />
+    <select id="themeSelect">
+      <option value="theme1">Theme 1</option>
+      <option value="theme2">Theme 2</option>
+      <option value="theme3">Theme 3</option>
+      <option value="theme4">Theme 4</option>
+      <option value="theme5">Theme 5</option>
     </select>
-    <input type="range" id="imageSize" min="150" max="500" value="250" />
-    <input type="file" id="imageUpload" accept="image/*" />
     <button onclick="downloadJPEG()">Download as JPEG</button>
     <button class="secondary" onclick="generateCalendar()">Generate Calendar</button>
   </div>
 </header>
 
 <div id="previewWrapper">
-  <div id="calendar">
+  <div id="calendar" class="theme1">
     <div class="company-name" id="companyName">Your Company</div>
-    <div class="layout top-image" id="layout">
-      <div class="header-image"><img id="headerImg" src="https://via.placeholder.com/1200x300" /></div>
-      <div class="months" id="months"></div>
-    </div>
+    <div class="year-display" id="yearDisplay">2026</div>
+    <div class="months" id="months"></div>
   </div>
 </div>
 
 <script>
-  const holidays = {"01-01": true,"02-04": true,"05-01": true,"12-25": true};
-  const monthsEl = document.getElementById('months');
-  const headerImg = document.getElementById('headerImg');
-  const imageSize = document.getElementById('imageSize');
-  const layout = document.getElementById('layout');
+  const holidays2026_2030 = {
+    '2026': ['2026-01-01','2026-02-04','2026-02-12','2026-04-14','2026-05-01','2026-08-15','2026-12-25'],
+    '2027': ['2027-01-01','2027-02-04','2027-03-03','2027-04-14','2027-05-01','2027-08-15','2027-12-25'],
+    '2028': ['2028-01-01','2028-02-04','2028-03-20','2028-04-14','2028-05-01','2028-08-15','2028-12-25'],
+    '2029': ['2029-01-01','2029-02-04','2029-03-10','2029-04-14','2029-05-01','2029-08-15','2029-12-25'],
+    '2030': ['2030-01-01','2030-02-04','2030-03-28','2030-04-14','2030-05-01','2030-08-15','2030-12-25']
+  };
 
-  function buildCalendar(year = new Date().getFullYear()) {
+  const monthsEl = document.getElementById('months');
+
+  function buildCalendar(year) {
     monthsEl.innerHTML = '';
+    document.getElementById('yearDisplay').textContent = year;
+    const holidays = holidays2026_2030[year] || [];
+
     for (let m = 0; m < 12; m++) {
       const date = new Date(year, m, 1);
       const month = document.createElement('div');
       month.className = 'month';
       month.innerHTML = `<h3>${date.toLocaleString('default', { month: 'long' })}</h3>`;
+
       const days = document.createElement('div');
       days.className = 'days';
       const daysInMonth = new Date(year, m + 1, 0).getDate();
+
       for (let d = 1; d <= daysInMonth; d++) {
-        const key = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const key = `${year}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const day = document.createElement('div');
-        day.className = 'day' + (holidays[key] ? ' holiday' : '');
+        day.className = 'day' + (holidays.includes(key) ? ' holiday' : '');
         day.textContent = d;
         days.appendChild(day);
       }
+
       month.appendChild(days);
       monthsEl.appendChild(month);
     }
   }
 
+  // Event listeners
   document.getElementById('companyInput').addEventListener('input', e => {
     document.getElementById('companyName').textContent = e.target.value || 'Your Company';
   });
+  document.getElementById('yearInput').addEventListener('input', generateCalendar);
   document.getElementById('fontSelect').addEventListener('change', e => {
     document.body.style.fontFamily = e.target.value;
   });
-  document.getElementById('layoutSelect').addEventListener('change', e => {
-    layout.className = 'layout ' + e.target.value;
+  document.getElementById('fontColor').addEventListener('input', e => {
+    document.getElementById('calendar').style.color = e.target.value;
   });
-  imageSize.addEventListener('input', e => {
-    headerImg.style.height = e.target.value + 'px';
+  document.getElementById('companyFontSize').addEventListener('input', e => {
+    document.getElementById('companyName').style.fontSize = e.target.value + 'px';
   });
-  document.getElementById('imageUpload').addEventListener('change', e => {
+  document.getElementById('yearFontSize').addEventListener('input', e => {
+    document.getElementById('yearDisplay').style.fontSize = e.target.value + 'px';
+  });
+  document.getElementById('companyColor').addEventListener('input', e => {
+    document.getElementById('companyName').style.color = e.target.value;
+  });
+  document.getElementById('yearColor').addEventListener('input', e => {
+    document.getElementById('yearDisplay').style.color = e.target.value;
+  });
+
+  document.getElementById('backgroundUpload').addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => headerImg.src = reader.result;
+    reader.onload = () => {
+      const cal = document.getElementById('calendar');
+      cal.style.backgroundImage = `url(${reader.result})`;
+    };
     reader.readAsDataURL(file);
   });
 
+  document.getElementById('themeSelect').addEventListener('change', e => {
+    const cal = document.getElementById('calendar');
+    cal.className = 'theme1'; // reset
+    cal.classList.add(e.target.value);
+  });
+
   function generateCalendar() {
-    buildCalendar();
+    const year = parseInt(document.getElementById('yearInput').value);
+    buildCalendar(year);
   }
 
   function downloadJPEG() {
-    html2canvas(document.getElementById('calendar')).then(canvas => {
-      canvas.toBlob(function(blob) {
-        const link = document.createElement('a');
-        link.download = 'calendar.jpg';
-        link.href = URL.createObjectURL(blob);
-        link.click();
-      });
+    html2canvas(document.getElementById('calendar'), {useCORS: true, scale: 2}).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `SriLanka_Calendar_${document.getElementById('yearInput').value}.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 1.0);
+      link.click();
     });
   }
 
-  buildCalendar();
+  generateCalendar();
 </script>
 
 </body>
