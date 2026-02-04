@@ -234,3 +234,33 @@ x: 20,
 y: 20
 });
 }
+document.getElementById('themeSelect').addEventListener('change', e => {
+const theme = e.target.value;
+
+
+if (theme === 'corporate') {
+document.documentElement.style.setProperty('--primary', '#4f46e5');
+document.body.style.background = 'linear-gradient(135deg, #e0e7ff, #f0fdf4)';
+}
+
+
+if (theme === 'festive') {
+document.documentElement.style.setProperty('--primary', '#ec4899');
+document.body.style.background = 'linear-gradient(135deg, #fff7ed, #fef3c7)';
+}
+
+
+if (theme === 'dark') {
+document.documentElement.style.setProperty('--primary', '#22d3ee');
+document.body.style.background = '#0f172a';
+document.body.style.color = '#e5e7eb';
+}
+});
+
+
+generateCalendar();
+</script>
+
+
+</body>
+</html>
